@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cool Countdown Timer</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+        
+        .countdown-container {
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+        }
+        
+        .countdown {
+            font-size: 8rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .unit {
+            font-size: 2rem;
+            opacity: 0.8;
+            margin-top: 1rem;
+        }
+        
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        .input-container {
+            margin-top: 2rem;
+        }
+        
+        input {
+            padding: 0.5rem;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: white;
+            margin-right: 0.5rem;
+        }
+        
+        button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown-container">
+        <div class="glow"></div>
+        <div class="countdown" id="countdown">00:00:00</div>
+        <div class="unit">TIME REMAINING</div>
+        <div class="input-container">
+            <input type="datetime-local" id="targetDate">
+            <button onclick="setCountdown()">Set Countdown</button>
+        </div>
+    </div>
+
+    <script>
+        let countdownInterval;
+        
+        function setCountdown() {
+            // Clear existing interval
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            const targetDate = new Date(document.getElementById('targetDate').value).getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('countdown').innerHTML = "00:00:00";
+                    return;
+                }
+                
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById('countdown').innerHTML = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            // Update immediately
+            updateCountdown();
+            
+            // Update every second
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+    </script>
+</body>
+</html>
